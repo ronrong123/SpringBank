@@ -7,10 +7,13 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.company.common.BankAPI;
+import com.company.temp.service.BankVO;
 
 @Controller
 public class BankController {
@@ -51,14 +54,38 @@ public class BankController {
 		return "home";
 	}
 	
-	@RequestMapping("/userinfo")
-	public String userinfo(HttpSession session, HttpServletRequest request) {
+	String access_token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMTAwNzcwNTMyIiwic2NvcGUiOlsiaW5xdWlyeSIsImxvZ2luIiwidHJhbnNmZXIiXSwiaXNzIjoiaHR0cHM6Ly93d3cub3BlbmJhbmtpbmcub3Iua3IiLCJleHAiOjE2MjMxNDExNDksImp0aSI6ImE1ZDE5ZmZkLTQyYjMtNDA1Zi04Nzk1LWM3ZTE4OTIyNGY2OSJ9.bvnlo2PuS8qtrNlXd9Gbjs9qgVYz-CA9spwDrfVF47s";
+	@RequestMapping("/getAccountList")
+	public String getAccountList(HttpSession session, HttpServletRequest request, Model model) {
 		//String access_token = (String)session.getAttribute("access_token");
 		//String access_token = request.getParameter("access_token");
-		String access_token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMTAwNzcwNTMyIiwic2NvcGUiOlsiaW5xdWlyeSIsImxvZ2luIiwidHJhbnNmZXIiXSwiaXNzIjoiaHR0cHM6Ly93d3cub3BlbmJhbmtpbmcub3Iua3IiLCJleHAiOjE2MjMxNDExNDksImp0aSI6ImE1ZDE5ZmZkLTQyYjMtNDA1Zi04Nzk1LWM3ZTE4OTIyNGY2OSJ9.bvnlo2PuS8qtrNlXd9Gbjs9qgVYz-CA9spwDrfVF47s";
 		String use_num ="1100770532";
-		Map<String, Object> userinfo = bankAPI.getUserInfo(access_token, use_num);
-		System.out.println("userinfo=" + userinfo);
+		Map<String, Object> map = bankAPI.getAccountList(access_token, use_num);
+		System.out.println("userinfo=" + map);
+		model.addAttribute("list", map);
+		return "bank/getAccountList";
+	}
+	@RequestMapping("/getBalance")
+	public String getBalance(BankVO vo, Model model) {
+		vo.setAccess_Token(access_token);
+		Map<String, Object> map = bankAPI.getBalance(vo);
+		System.out.println("작액조회=" + map);
+		model.addAttribute("balance", map);
+		return "bank/getBalance";
+	}
+	
+	@ResponseBody //자동으로 json을 해줌 또는 상단에 @RestController를 하면 json구조로 변경시켜줌, 일반으로 넘기는건 @Controller
+	@RequestMapping("/ajacGetBalance")
+	public Map ajacGetBalance(BankVO vo, Model model) {
+		vo.setAccess_Token(access_token);
+		Map<String, Object> map = bankAPI.getBalance(vo);
+		return map;
+	}
+	@RequestMapping("/getOrgAuthorize")
+	public String getOrgAuthorize() {
+		Map<String, Object> map = bankAPI.getOrgAccessToken();
+		System.out.println("access_token : " + map.get("access_token"));
 		return "home";
 	}
+	
 }
