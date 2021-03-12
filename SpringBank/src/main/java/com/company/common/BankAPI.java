@@ -12,7 +12,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import com.company.temp.service.BankVO;
 import com.google.gson.Gson;
@@ -26,6 +31,26 @@ public class BankAPI {
 	String client_id ="28bfeff9-60d2-4fab-9600-79a2fe99c2b9";
 	String client_secret = "170ddd4c-c756-43d2-bb91-be8ca991aec6";
 	String redirect_uri ="http://localhost/bank/callback";
+	String orf_access_token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJNMjAyMTExNjc2Iiwic2NvcGUiOlsib29iIl0sImlzcyI6Imh0dHBzOi8vd3d3Lm9wZW5iYW5raW5nLm9yLmtyIiwiZXhwIjoxNjIzMzA2NDk1LCJqdGkiOiI3ZjcxYzBlNS00ZTg1LTQyY2EtODRlOC1kYzg2MTFlZWU1N2YifQ.-tqxOAKcb973yRHGjfKrKXNHVNoG8u9LYra0OGN5t9s";
+	
+	public Map<String, Object> getOrgAccessTokenRestTemplate() {
+		String reqURL = host + "/oauth/2.0/token";           
+        MultiValueMap<String, String> param = new LinkedMultiValueMap<String, String>();
+        param.add("client_id", client_id);
+        param.add("client_secret", client_secret);
+        param.add("scope", "oob");
+        param.add("grant_type", "client_credentials");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+
+        HttpEntity<MultiValueMap<String, String>> request = 
+        		new HttpEntity<MultiValueMap<String, String>>(param, headers);
+        
+        RestTemplate restTemplate = new RestTemplate();
+        Map map = restTemplate.postForObject(reqURL,request,Map.class);
+        return map;
+	}
 	// 로그인
 	public String getAccessToken (String authorize_code) {
         String access_Token = "";
@@ -197,7 +222,9 @@ public class BankAPI {
 	
 	//32자리의 난수
 	public String getRand32() {
-		return "";
+		long time = System.currentTimeMillis(); 
+		String str = Long.toString(time);		
+		return str.substring(str.length()-32);
 	}
 	
 	//9자리의 난수
