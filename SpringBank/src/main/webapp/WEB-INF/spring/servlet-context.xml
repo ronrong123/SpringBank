@@ -50,8 +50,13 @@
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
 		<beans:property name="suffix" value=".jsp" />
+		<beans:property name="order" value="2" />
 	</beans:bean>
 	
+	<!-- BeanNameViewResolver의 value가 1이기에 먼저 처리하고 없으면 2번째를 처리함 -->
+	<beans:bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<beans:property name="order" value="1" />
+	</beans:bean>
 	<!-- @Component, @Controller, @Service, @Repository 처리 -->
 	<context:component-scan base-package="com.company" />
 	
