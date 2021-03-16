@@ -11,4 +11,13 @@
 		 from  employees
 	</select>
 	<!-- select에는 resultType필수! id필수! -->
+	
+	<!-- 일별 판매합계 -->
+	
+	<select id="getChartData" resultType="map">
+		<!-- vo를 대신해서map을 쓸수있음 map이면 조회하는 데이터타입을 그대로 들고옴 map이 여러개면(배열) List로 묶음 -->	
+		select to_char(sale_date, 'yyyy-MM-dd') as sale_date, sum(sale_price) as price
+		from sale_tbl_10
+		group by to_char(sale_date, 'yyyy-MM-dd')		
+	</select>
 </mapper>

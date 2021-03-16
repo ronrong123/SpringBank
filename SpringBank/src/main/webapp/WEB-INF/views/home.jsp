@@ -15,6 +15,7 @@
 <a href="pdf/empList">empList</a>
 <a href="pdf/empList2?dept=50">empList2</a>
 <a href="pdf/empList3">empList3</a>
+<a href="insertFboard">파일업로드</a>
 <div style="margin-top:20px;">
 <iframe src="pdf/empList" width="500" height="700" style="display:inline-block;"></iframe>
 <iframe src="pdf/empList3" width="500" height="700" style="display:inline-block;"></iframe>
